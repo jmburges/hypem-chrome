@@ -11,12 +11,13 @@
 					exists=true;
 					chrome.tabs.executeScript(tab.id,{file:"checker.js"});
 					chrome.extension.onRequest.addListener(
-						function(request,sender,sendResponse){
+          function(request,sender,sendResponse){
 							if(request.exists == false){
 								
 								document.getElementById('noplayer').style.display='block';
 								
-							}else {
+                }else {
+
 								document.body.style.width="270";
 								if(request.playpause=="pause"){
 									document.getElementById("playpause").value="Pause";
@@ -65,7 +66,7 @@
 					chrome.tabs.executeScript(tab.id,{file:"prev.js"});
 					chrome.extension.onRequest.addListener(
 						function(request,sender,sendResponse){
-						document.getElementById('nowplaying').innerHTML= request.nowplaying;
+            document.getElementById('nowplaying').innerHTML= request.nowplaying;
 						if(request.loved=="fav-on"){
 									document.getElementById("loved").value="Hate";
 								} else {
@@ -83,7 +84,7 @@
 					chrome.tabs.executeScript(tab.id,{file:"next.js"});
 					chrome.extension.onRequest.addListener(
 						function(request,sender,sendResponse){
-						document.getElementById('nowplaying').innerHTML= request.nowplaying;
+            document.getElementById('nowplaying').innerHTML= request.nowplaying;
 						if(request.loved=="fav-on"){
 									document.getElementById("loved").value="Hate";
 								} else {
