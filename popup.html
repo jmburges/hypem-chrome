@@ -1,0 +1,128 @@
+<html>  
+ 
+    <script type="text/javascript">
+		function checkExists(){
+			
+			chrome.tabs.getAllInWindow(null,function(tabs){
+				var exists=false;
+			tabs.forEach(function(tab){
+				
+				if(tab.url.match(/http:\/\/hypem.com\/*/)){
+					exists=true;
+					chrome.tabs.executeScript(tab.id,{file:"checker.js"});
+					chrome.extension.onRequest.addListener(
+						function(request,sender,sendResponse){
+							if(request.exists == false){
+								
+								document.getElementById('noplayer').style.display='block';
+								
+							}else {
+								document.body.style.width="270";
+								if(request.playpause=="pause"){
+									document.getElementById("playpause").value="Pause";
+								}else {
+									document.getElementById("playpause").value="Play";
+								}
+								if(request.loved=="fav-on"){
+									document.getElementById("loved").value="Hate";
+								} else {
+									document.getElementById("loved").value="Love";
+								}
+								document.getElementById('player').style.display='block';
+								document.getElementById('nowplaying').innerHTML= request.exists;
+								
+							}
+						});
+				}
+				
+			});
+			if(!exists){
+				document.getElementById('noplayer').style.display='block';
+			}
+			});
+			
+		}
+		function toggle() {
+		chrome.tabs.getAllInWindow(null,function(tabs){
+			tabs.forEach(function(tab){
+				if(tab.url.match(/http:\/\/hypem.com\/*/)){
+					chrome.tabs.executeScript(tab.id,{file:"playpause.js"});
+					
+				}
+			});
+		});
+		if(document.getElementById("playpause").value=="Pause"){
+						document.getElementById("playpause").value="Play";
+					}else{
+						document.getElementById("playpause").value="Pause";
+					}
+	}
+		
+		function prev() {
+		chrome.tabs.getAllInWindow(null,function(tabs){
+			tabs.forEach(function(tab){
+				if(tab.url.match(/http:\/\/hypem.com\/*/)){
+					chrome.tabs.executeScript(tab.id,{file:"prev.js"});
+					chrome.extension.onRequest.addListener(
+						function(request,sender,sendResponse){
+						document.getElementById('nowplaying').innerHTML= request.nowplaying;
+						if(request.loved=="fav-on"){
+									document.getElementById("loved").value="Hate";
+								} else {
+									document.getElementById("loved").value="Love";
+								}
+					});
+				}
+			});
+		});
+	}
+		function next() {
+		chrome.tabs.getAllInWindow(null,function(tabs){
+			tabs.forEach(function(tab){
+				if(tab.url.match(/http:\/\/hypem.com\/*/)){
+					chrome.tabs.executeScript(tab.id,{file:"next.js"});
+					chrome.extension.onRequest.addListener(
+						function(request,sender,sendResponse){
+						document.getElementById('nowplaying').innerHTML= request.nowplaying;
+						if(request.loved=="fav-on"){
+									document.getElementById("loved").value="Hate";
+								} else {
+									document.getElementById("loved").value="Love";
+								}
+					});
+				}
+			});
+		});
+	}
+		function love() {
+		chrome.tabs.getAllInWindow(null,function(tabs){
+			tabs.forEach(function(tab){
+				if(tab.url.match(/http:\/\/hypem.com\/*/)){
+				chrome.tabs.executeScript(tab.id,{file:"love.js"});
+				}
+			});
+		});
+					if(document.getElementById("loved").value=="Love"){
+						document.getElementById("loved").value="Hate";
+					}else{
+						document.getElementById("loved").value="Love";
+					}
+	}
+	</script>
+	<body style="width:300;" onload="checkExists();">
+		<div id="noplayer" style="display:none">
+			Hypem isn't open or you aren't playing anything!
+			
+			Please open Hypem and start playing something.
+		</div>
+		<div id="player" style="display:none">
+			<input type="button" value="Previous" name="prev" onclick="prev();">
+			<input type="button" value="Play/Pause" name="play" id="playpause" onclick="toggle();">
+			<input type="button" value="Love" name="love" id="loved" onclick="love();">
+			<input type="button" value="Next" name="next" onclick="next();"><br />
+			
+			<div id="nowplaying"></div>
+		</div>
+	</body>
+	</html>
+	
