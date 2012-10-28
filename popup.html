@@ -1,48 +1,45 @@
 <html>  
  
-    <script type="text/javascript">
-		function checkExists(){
-			
-			chrome.tabs.getAllInWindow(null,function(tabs){
-				var exists=false;
-			tabs.forEach(function(tab){
-				
-				if(tab.url.match(/http:\/\/hypem.com\/*/)){
+<script type="text/javascript">
+	function checkExists(){
+		var exists=false;
+		chrome.tabs.query({url:"http://hypem.com/*"}, function(tabs)
+				{
+				for (var i=0; i <tabs.length;i++){
 					exists=true;
-					chrome.tabs.executeScript(tab.id,{file:"checker.js"});
+					chrome.tabs.executeScript(tabs[0].id,{file:"checker.js"});
 					chrome.extension.onRequest.addListener(
-          function(request,sender,sendResponse){
-							if(request.exists == false){
-								
-								document.getElementById('noplayer').style.display='block';
-								
-                }else {
+						function(request,sender,sendResponse){
+						if(request.exists == false){
+						alert("aasfd");
+						document.getElementById('noplayer').style.display='block';
 
-								document.body.style.width="270";
-								if(request.playpause=="pause"){
-									document.getElementById("playpause").value="Pause";
-								}else {
-									document.getElementById("playpause").value="Play";
-								}
-								if(request.loved=="fav-on"){
-									document.getElementById("loved").value="Hate";
-								} else {
-									document.getElementById("loved").value="Love";
-								}
-								document.getElementById('player').style.display='block';
-								document.getElementById('nowplaying').innerHTML= request.exists;
-								
+						}else {
+						document.body.style.width="270";
+						if(request.playpause=="play-state pause"){
+						document.getElementById("pauseButton").style.display="inline-block";
+							document.getElementById("playButton").style.display="none";
+						}else {
+							document.getElementById("playButton").style.display="inline-block";
+							document.getElementById("pauseButton").style.display="none";
 							}
+						if(request.loved=="fav-on"){
+							document.getElementById("hateButton").style.display="inline-block";
+							document.getElementById("loveButton").style.display="none";
+						} else {
+							document.getElementById("loveButton").style.display="inline-block";
+							document.getElementById("hateButton").style.display="none";
+						}
+						document.getElementById('player').style.display='block';
+						document.getElementById('nowplaying').innerHTML= request.exists;
+
+						}
 						});
 				}
-				
-			});
-			if(!exists){
-				document.getElementById('noplayer').style.display='block';
-			}
-			});
-			
-		}
+
+				});
+
+}
 		function toggle() {
 		chrome.tabs.getAllInWindow(null,function(tabs){
 			tabs.forEach(function(tab){
@@ -52,13 +49,14 @@
 				}
 			});
 		});
-		if(document.getElementById("playpause").value=="Pause"){
-						document.getElementById("playpause").value="Play";
+		if(document.getElementById("pauseButton").style.display=="inline-block"){
+							document.getElementById("playButton").style.display="inline-block";
+							document.getElementById("pauseButton").style.display="none";
 					}else{
-						document.getElementById("playpause").value="Pause";
+							document.getElementById("pauseButton").style.display="inline-block";
+							document.getElementById("playButton").style.display="none";
 					}
-	}
-		
+	} 
 		function prev() {
 		chrome.tabs.getAllInWindow(null,function(tabs){
 			tabs.forEach(function(tab){
@@ -68,10 +66,12 @@
 						function(request,sender,sendResponse){
             document.getElementById('nowplaying').innerHTML= request.nowplaying;
 						if(request.loved=="fav-on"){
-									document.getElementById("loved").value="Hate";
-								} else {
-									document.getElementById("loved").value="Love";
-								}
+							document.getElementById("hateButton").style.display="inline-block";
+							document.getElementById("loveButton").style.display="none";
+						} else {
+							document.getElementById("loveButton").style.display="inline-block";
+							document.getElementById("hateButton").style.display="none";
+						}
 					});
 				}
 			});
@@ -86,10 +86,12 @@
 						function(request,sender,sendResponse){
             document.getElementById('nowplaying').innerHTML= request.nowplaying;
 						if(request.loved=="fav-on"){
-									document.getElementById("loved").value="Hate";
-								} else {
-									document.getElementById("loved").value="Love";
-								}
+							document.getElementById("hateButton").style.display="inline-block";
+							document.getElementById("loveButton").style.display="none";
+						} else {
+							document.getElementById("loveButton").style.display="inline-block";
+							document.getElementById("hateButton").style.display="none";
+						}
 					});
 				}
 			});
@@ -103,24 +105,55 @@
 				}
 			});
 		});
-					if(document.getElementById("loved").value=="Love"){
-						document.getElementById("loved").value="Hate";
+		if(document.getElementById("loveButton").style.display=="inline-block"){
+							document.getElementById("hateButton").style.display="inline-block";
+							document.getElementById("loveButton").style.display="none";
 					}else{
-						document.getElementById("loved").value="Love";
+							document.getElementById("loveButton").style.display="inline-block";
+							document.getElementById("hateButton").style.display="none";
 					}
 	}
-	</script>
+</script>
+<style>
+	.button{
+		display:inline-block;
+		height:32px;
+		width:32px;
+		background-repeat:no-repeat;
+	}
+	#prevButton{
+		background: url('Prev.png');
+	}
+	#nextButton{
+		background: url('Next.png');
+	}
+	#playButton{
+		background: url('Play.png');
+	}
+	#pauseButton{
+		background: url('Pause.png');
+	}
+	#loveButton{
+		background: url('Favorite_grey.png');
+	}
+	#hateButton{
+		background: url('Favorite.png');
+	}
+
+</style>
 	<body style="width:300;" onload="checkExists();">
 		<div id="noplayer" style="display:none">
-			Hypem isn't open or you aren't playing anything!
+			Hypem isn't open or there is more than one hypem window open!
 			
-			Please open Hypem and start playing something.
+			Please open just one Hypem window.
 		</div>
 		<div id="player" style="display:none">
-			<input type="button" value="Previous" name="prev" onclick="prev();">
-			<input type="button" value="Play/Pause" name="play" id="playpause" onclick="toggle();">
-			<input type="button" value="Love" name="love" id="loved" onclick="love();">
-			<input type="button" value="Next" name="next" onclick="next();"><br />
+			<a href="#" id="prevButton" class="button"  onclick="prev();"></a>
+			<a href="#" class="button" id="playButton" onclick="toggle();"></a>
+			<a href="#" class="button" id="pauseButton" onclick="toggle();"></a>
+			<a href="#" class="button" id="loveButton" onclick="love();"></a>
+			<a href="#" class="button" id="hateButton" onclick="love();"></a>
+			<a href="#" class="button" id="nextButton" onclick="next();"></a>
 			
 			<div id="nowplaying"></div>
 		</div>

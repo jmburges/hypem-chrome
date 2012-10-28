@@ -3,7 +3,7 @@ if (document.defaultView.getComputedStyle(document.getElementById('player-contai
 }
 else {
 	var div = document.getElementById("player-nowplaying");
-	var string = div.childNodes[0].innerHTML + " - " + div.childNodes[2].innerHTML;
+	var string = div.childNodes[1].innerHTML + " - " + div.childNodes[3].innerHTML;
 	playbutton = document.getElementById("playerPlay");
 
 	div = document.getElementById("playerFav");
